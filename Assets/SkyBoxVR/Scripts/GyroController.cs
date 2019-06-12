@@ -11,7 +11,16 @@ public class GyroController : MonoBehaviour
         // 動作確認用のログ
         Debug.Log("started");
 
-        rotate = transform.rotation.eulerAngles;
+        // Unityエディタと実機で処理を分ける
+        if (Application.isEditor)
+        {
+            rotate = transform.rotation.eulerAngles;
+            Debug.Log("no-smartphone");
+        }
+        else 
+        {
+            Input.gyro.enabled =true;
+        }
     }
 
     void Update()
@@ -19,22 +28,34 @@ public class GyroController : MonoBehaviour
         // キーボードで視点変更
         float speed = Time.deltaTime * 100.0f;
 
-        if (Input.GetKey(KeyCode.LeftArrow))
+        // PCは矢印キーで視点変更、スマホはジャイロで視点変更
+        if (Application.isEditor)
         {
-            rotate.y -= speed;
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                rotate.y -= speed;
+            }
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                rotate.y += speed;
+            }
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                rotate.x -= speed;
+            }
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                rotate.x += speed;
+            }
+            transform.rotation = Quaternion.Euler(rotate);
         }
-        if (Input.GetKey(KeyCode.RightArrow))
+        else
         {
-            rotate.y += speed;
+            Quaternion gratitude = Input.gyro.attitude;
+            gratitude.x *= -1;
+            gratitude.y *= -1;
+            transform.localRotation = Quaternion.Euler(90, 0, 0) * gratitude;
+            
         }
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            rotate.x -= speed;
-        }
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            rotate.x += speed;
-        }
-        transform.rotation = Quaternion.Euler(rotate);
     }
 }
