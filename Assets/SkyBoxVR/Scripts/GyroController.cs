@@ -28,7 +28,7 @@ public class GyroController : MonoBehaviour
         // キーボードで視点変更
         float speed = Time.deltaTime * 100.0f;
 
-        // PCは矢印キーで視点変更、スマホはジャイロで視点変更
+        // PCは矢印キーで視点変更
         if (Application.isEditor)
         {
             if (Input.GetKey(KeyCode.LeftArrow))
@@ -49,6 +49,7 @@ public class GyroController : MonoBehaviour
             }
             transform.rotation = Quaternion.Euler(rotate);
         }
+        // スマホはジャイロで視点変更
         else
         {
             Quaternion gratitude = Input.gyro.attitude;
